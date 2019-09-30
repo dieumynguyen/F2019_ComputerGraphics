@@ -1,0 +1,22 @@
+Dieu My Nguyen
+CSCI 5229 - Computer Graphics
+03 October 2019
+Homework 4 - Projections
+
+This program draws and displays the 3D of honey bees from homework 3. The user can view the scene in orthogonal and perspective projections from multiple eye positions. When in perspective mode, the scene can also be viewed in the first-person mode. When in first-person perspective, move the mouse to look around at a camera position. Follow the keys below-listed to move the camera, or to walk around the scene. 
+
+Approximate time it took to complete the assignment: 12 hours
+
+Key bindings for this program:
+- arrows: Change view angle
+- 0:      Reset view angle
+- a or A: Toggle show axes
+- m or M: Switch orthogonal or perspective
+- p or P: Turn on or off first-person mode
+- q: 	  Move the first-person camera up
+- z: 	  Move the first-person camera down
+- w: 	  Move the first-person camera forward
+- x: 	  Move the first-person camera backward
+- d: 	  Move the first-person camera to the right
+- a: 	  Move the first-person camera to the left
+- esc:    Exit
