@@ -1,7 +1,9 @@
 HW2: Lorenz Attractor
+
 Write a three dimensional OpenGL visualization of the Lorenz Attractor. The lorenz.c program provides an integrator that may be used to generate a sequence of points to use in the visualization
 
 At a minimum, your program should provide a line trace of the sequence of attractor and allow the trace to be viewed from different positions and allow one or more of the parameters in the Lorenz equations to be modified interactively. (The academic lesson here is what it takes to get a simple scene rendered and basic user interaction.)
+
 This is your opportunity to experiment and impress your friends with cool science, so use your imagination and explore both OpenGL and the properties of the Lorenz Attractor.
 What to submit:
 	1.	One ZIP or TAR archive containing all files you are submitting;
@@ -9,6 +11,7 @@ What to submit:
 	3.	Provide a README with brief instructions on how to use the program. This should include instructions on how to change the view, and whatever else the program does;
 	4.	Optional: If you discovered anything interesting about the Lorenz Attractor you can attach a brief writeup. If plain text won't do, a PDF file would be best;
 	5.	Time it took you to complete the assignment.
+
 Before submitting, please consider the following checklist:
 	1.	Make sure your program compiles with no warnings (gcc -Wall is your friend);
 	2.	Make sure that the program behaves correctly when the window is resized;

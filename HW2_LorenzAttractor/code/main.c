@@ -27,6 +27,11 @@ double lorenz_points[50000][3];
 // Time counter for animation of moving point
 int time_step = 0;
 
+// Counters for animation of line segment
+int segment_length = 200;
+int line_time_step = 0;
+int rate = 15;
+
 /************** LORENZ FUNCTIONS **************/
 void normalize_array(double array[], int num_elements) {
   // Get min and max of array
@@ -119,6 +124,14 @@ void key(unsigned char k, int x, int y) {
   // Reset view angle
   else if (k == '0')
     th = ph = 0;
+
+  //  Increase z by 0.1
+  else if (k == '+')
+    z += 0.1;
+  //  Decrease z by 0.1
+  else if (k == '-')
+    z -= 0.1;
+
   // Change parameters of Lorenz attractor
   else if (k == 'r') {
     s = 10;
@@ -203,10 +216,24 @@ void display() {
   int i;
   glBegin(GL_LINE_STRIP);
   for (i=0; i<num_timesteps; i++) {
-    glColor3f(0.686, 0.933, 0.933);
+    glColor4f(0.686, 0.933, 0.933, 0.4);
     glVertex3dv(lorenz_points[i]);
   }
   glEnd();
+
+  // Make line segment that goes around
+  int start_idx = line_time_step;
+  int end_idx = line_time_step + segment_length;
+  glBegin(GL_LINES);
+  for (i=0; i<num_timesteps; i++) {
+    if (start_idx <= i && i < end_idx) {
+      glColor3f(1.000, 0.271, 0.00);
+      glVertex3dv(lorenz_points[i]);
+    }
+  }
+  glEnd();
+  line_time_step += rate;
+  line_time_step = line_time_step % (num_timesteps-segment_length);
 
   // Draw a point that goes around attractor
   glColor3f(0.957, 0.643, 0.376);
@@ -219,7 +246,7 @@ void display() {
   float point_z = lorenz_points[step][2];
   glVertex3d(point_x, point_y, point_z);
   glEnd();
-  time_step ++;
+  time_step += rate;
   time_step = time_step % num_timesteps;
 
   //  Draw axes in white
@@ -251,11 +278,25 @@ void display() {
   glWindowPos2i(5,410);
   Print("Keys:");
   glWindowPos2i(5,390);
-  Print("q: + sigma, a: - sigma");
+  Print("%-7s %-s", "arrows:", "change view angle");
   glWindowPos2i(5,370);
-  Print("e: + beta, d: - beta");
+  Print("%-7s %-s", "0:", "reset view angle");
   glWindowPos2i(5,350);
-  Print("t: + rho, g: - rho");
+  Print("%-7s %-s", "r:", "reset parameters");
+  glWindowPos2i(5,330);
+  Print("%-7s %-s", "q:", "+ sigma");
+  glWindowPos2i(5,310);
+  Print("%-7s %-s", "a:", "- sigma");
+  glWindowPos2i(5,290);
+  Print("%-7s %-s", "e:", "+ beta");
+  glWindowPos2i(5,270);
+  Print("%-7s %-s", "d:", "- sigma");
+  glWindowPos2i(5,250);
+  Print("%-7s %-s", "t:", "+ rho");
+  glWindowPos2i(5,230);
+  Print("%-7s %-s", "g:", "- rho");
+  glWindowPos2i(5,210);
+  Print("%-7s %-s", "esc:", "exit");
 
   //  Flush and swap
   glFlush();
@@ -268,11 +309,15 @@ int main(int argc,char* argv[]) {
   glutInit(&argc,argv);
   // Request double buffered, true color window
   glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+  // Initial window position
   glutInitWindowPosition(50, 50);
   // Request window of size
   glutInitWindowSize(700, 500);
   // Create the window
   glutCreateWindow("Dieu My Nguyen - Lorenz Attractor");
+  // Enables opacity
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   // Tell GLUT to call "display" when the scene should be drawn
   glutDisplayFunc(display);
   // Tell GLUT to call "reshape" when the window is resized

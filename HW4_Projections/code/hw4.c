@@ -87,9 +87,9 @@ void display() {
 	  glRotatef(ph,1,0,0);
 	  glRotatef(th,0,1,0);
 	}
-	//  Set view angle
-	glRotatef(ph,1,0,0);
-	glRotatef(th,0,1,0);
+	// Set view angle
+	// glRotatef(ph,1,0,0);
+	// glRotatef(th,0,1,0);
 
    /* ========= CALL SHAPES HERE ========= */
    ground(0, 50);

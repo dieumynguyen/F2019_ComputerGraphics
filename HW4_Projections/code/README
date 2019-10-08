@@ -3,7 +3,7 @@ CSCI 5229 - Computer Graphics
 03 October 2019
 Homework 4 - Projections
 
-This program draws and displays the 3D of honey bees from homework 3. The user can view the scene in orthogonal and perspective projections from multiple eye positions. When in perspective mode, the scene can also be viewed in the first-person mode. When in first-person perspective, move the mouse to look around at a camera position. Follow the keys below-listed to move the camera, or to walk around the scene. 
+This program draws and displays the 3D of honey bees from homework 3. The user can view the scene in orthogonal and perspective projections from multiple eye positions. When in perspective mode, the scene can also be viewed in the first-person mode. When in first-person perspective, there is a gray cube to represent the camera. The user can move the mouse to look around at a camera position. Follow the keys below-listed to move the camera, or to walk around the scene. 
 
 Approximate time it took to complete the assignment: 12 hours
 
