@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
@@ -18,10 +17,10 @@
 #define Sin(th) sin(3.1415926/180*(th))
 
 /* ====================== GLOBALS ====================== */
-int th = 0;           //  Azimuth
-int ph = 10;          //  Elevation
-double zh = 90;       //  Rotation
-int axes = 1;         //  Display axes
+int th = 0;           // Azimuth
+int ph = 10;          // Elevation
+double zh = 90;       // Rotation
+int axes = 1;         // Display axes
 
 // For projections
 int firstPerson = 0;  // First person mode is perspective
@@ -30,10 +29,10 @@ int fov = 55;         // Field of view for perspective
 double asp = 1;       // Aspect ratio
 double dim = 4.0;     // Size of world
 // For FP Perspective
-float xPosition = 0, yPosition = 0, zPosition = 2;  // Position of camera
+float xPosition = 0, yPosition = 0, zPosition = 4;  // Position of camera
 float xRotation = 0, yRotation = 0, zRotation = 0;  // Rotation axes
 float angle = 0.0;									// Angle of rotation
-float cRadius = 2.0;                   				// Our distance from the camera
+float cRadius = 4.0;                   				// Our distance from the camera
 float xLast, yLast; 								// Previous x,y
 
 // For lighting
@@ -54,7 +53,7 @@ float shiny = 1;   // Shininess (value)
 float ylight = 0;  // Elevation of light
 
 /* ====================== PRINT ====================== */
-#define LEN 8192  //  Maximum length of text string
+#define LEN 8192  // Maximum length of text string
 void Print(const char* format, ...)
 {
    char buf[LEN];
@@ -689,54 +688,57 @@ void key(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
-void mouseMovement(int x, int y) {
-	// Check diff bw current and last x position
-	int xDiff = x - xLast;
-	// Check diff bw current and last y position
-	int yDiff = y - yLast;
-	// Set last x, y position to current x, y position
-	xLast = x;
-	yLast = y;
-	// Set x rotation with addition of difference in y position
-	xRotation += (float) yDiff * 0.1;  // Take off multiplying
-	// Set the x rotation
-	yRotation += (float) xDiff * 0.1;
+void mouseMovement(int x, int y)
+{
+    // Check diff bw current and last x position
+    int xDiff = x - xLast;
+    // Check diff bw current and last y position
+    int yDiff = y - yLast;
+    // Set last x, y position to current x, y position
+    xLast = x;
+    yLast = y;
+    // Set x rotation with addition of difference in y position
+    xRotation += (float) yDiff * 0.1;
+    // Set the x rotation
+    yRotation += (float) xDiff * 0.1;
 }
 
 /* ====================== HELPER FUNCTIONS ====================== */
 // GLUT calls this routine when the window is resized
-void reshape(int width,int height) {
-   //  Ratio of the width to the height of the window
-   asp = (height>0) ? (double)width/height : 1;
-   //  Set the viewport to the entire window
-   glViewport(0,0, width,height);
-   //  Set projection
-   Project();
+void reshape(int width,int height)
+{
+    // Ratio of the width to the height of the window
+    asp = (height>0) ? (double)width/height : 1;
+    // Set the viewport to the entire window
+    glViewport(0, 0, width, height);
+    // Set projection
+    Project();
 }
 
 /* ====================== MAIN ====================== */
 // Start up GLUT and tell it what to do
-int main(int argc,char* argv[]) {
-	//  Initialize GLUT and process user parameters
-	glutInit(&argc,argv);
-	//  Request double buffered, true color window with Z buffering at 600x600
-	glutInitWindowSize(800, 800);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-	//  Create the window
-	glutCreateWindow("Dieu My Nguyen - Lighting");
-	//  Tell GLUT to call "idle" when there is nothing else to do
-	glutIdleFunc(idle);
-	//  Tell GLUT to call "display" when the scene should be drawn
-	glutDisplayFunc(display);
-	//  Tell GLUT to call "reshape" when the window is resized
-	glutReshapeFunc(reshape);
-	// Check for mouse movement
-	glutPassiveMotionFunc(mouseMovement);
-	//  Tell GLUT to call "special" when an arrow key is pressed
-	glutSpecialFunc(special);
-	//  Tell GLUT to call "key" when a key is pressed
-	glutKeyboardFunc(key);
-	//  Pass control to GLUT so it can interact with the user
-	glutMainLoop();
-	return 0;
+int main(int argc,char* argv[])
+{
+    // Initialize GLUT and process user parameters
+    glutInit(&argc,argv);
+    // Request double buffered, true color window with Z buffering at 600x600
+    glutInitWindowSize(800, 800);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+    // Create the window
+    glutCreateWindow("Dieu My Nguyen - Lighting");
+    // Tell GLUT to call "idle" when there is nothing else to do
+    glutIdleFunc(idle);
+    // Tell GLUT to call "display" when the scene should be drawn
+    glutDisplayFunc(display);
+    // Tell GLUT to call "reshape" when the window is resized
+    glutReshapeFunc(reshape);
+    // Check for mouse movement
+    glutPassiveMotionFunc(mouseMovement);
+    // Tell GLUT to call "special" when an arrow key is pressed
+    glutSpecialFunc(special);
+    // Tell GLUT to call "key" when a key is pressed
+    glutKeyboardFunc(key);
+    // Pass control to GLUT so it can interact with the user
+    glutMainLoop();
+    return 0;
 }

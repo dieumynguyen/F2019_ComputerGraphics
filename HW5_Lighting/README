@@ -1,0 +1,36 @@
+Dieu My Nguyen
+CSCI 5229 - Computer Graphics
+10 October 2019
+Homework 5 - Lighting
+
+This program draws and displays the 3D of honey bees from homework 3, with the same projection settings from homework 4. Light is added, and is moving by default but can be stopped and moved under control keys. The user can also change the smooth/flat shading, the emission, ambient, diffuse, and specular intensities, as well as the shininess. 
+
+Approximate time it took to complete the assignment: 30 hours
+
+Key bindings for this program:
+
+------- General keys -------
+• esc:    Exit
+• 0:      Reset view angle
+• x or X: Toggle show axes
+
+------- Projection keys -------
+• p or P: Switch orthogonal or perspective
+• f or F: Turn on or off first-person mode
+• - or +: Decrease or increase field of view angle
+• u or m: Move first-person camera up or down
+• w: Move first-person camera forward
+• s: Move first-person camera backward
+• d: Move first-person camera right
+• a: Move first-person camera left
+
+------- Lighting keys -------
+• l or L: Toggle lighting
+• m or M: Toggle light movement
+• ( and ): Increase and decrease light rotation angle
+• [ and ]: Decrease and increase light elevation
+• i and I: Decrease and increase ambient level 
+• u and U: Decrease and increase diffuse level 
+• o and O: Decrease and increase specular level 
+• e and E: Decrease and increase emission level 
+• n and N: Decrease and increase shininess level 
