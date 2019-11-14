@@ -144,17 +144,30 @@ void display()
         glDisable(GL_LIGHTING);
     }
 
+
+    /* ========= GET CONCENTRATION MAPS ========= */
+    // Read in h5 concentration map
+    if (time_step < 5000) {
+        char filepath[30];
+        snprintf(filepath, 30, "abm_data/timestep_%d.txt", time_step);
+        // printf("%s\n", filepath);
+
+        // Read in external data to visualize concentration map
+        mapFile = fopen(filepath, "r");
+        for (i=0; i<arenaSize; i++) {
+            for (j=0; j<arenaSize; j++) {
+                fscanf(mapFile, "%lf", &concentrationMap[i][j]);
+            }
+        }
+        fclose(mapFile);
+    }
+
+
+    /* ========= GET BEE POSITIONS ========= */
+
+
+
     /* ========= CALL SHAPES HERE ========= */
-
-    /////////////////////////////
-    // Shader stuff
-
-    // int id;
-
-    // float time = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-    // id = glGetUniformLocation(shader[shaderMode],"time");
-    // glUniform1f(id, time);
-
     // Platform for pheromone plumes
     // ground(float x,float y,float z, float scale, concentrationMap)
     ground(0,platformHeight,0, 3, concentrationMap);
@@ -166,17 +179,38 @@ void display()
     bee(0,0,0, 0,0,0, 0.7, 0.35, 0.3,0.3,1.5, wingAngle, textureMode, texture);
 
     // Worker bees
-    bee(1,0,0, 0,0,0, 0.7, 0.3,0.3,0.3, 1, wingAngle, textureMode, texture);
-    bee(0.6,0,0.4, 0,0,0, 0.7, 0.3,0.3,0.3, 1, wingAngle, textureMode, texture);
+    for (i=0; i<3; i++) {
+        // Check for bee ID
+        // Then look in x and y array for this bee at this time_step for position
+        // Also check in its state array to see if it should flap wings
+        x = bee[i][x][time_step]
+        y = bee[i][y][time_step]
+        state = bee[i][state][time_step]   // 1 is scenting
+        if (state == 1) {
+            wingAngle = wingAngle;
+        }
+        else {
+            wingAngle = 0;
+        }
+        bee(x,0,y, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
+
+
+
+        //
+        // if (i == 0) {
+        //     bee(1,0,0, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
+        // }
+        // else {
+        //     bee(0.6,0,0.4, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
+        // }
+    }
+
+    // bee(1,0,0, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
+    // bee(0.6,0,0.4, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
+
     // bee(-0.6,0,0, 0,0,0, 0.7, 0.3,0.3,0.3, 1, wingAngle, textureMode, texture);
     // bee(-1.0,0,0.4, 0,0,0, 0.7, 0.3,0.3,0.3, 1, wingAngle, textureMode, texture);
     // bee(-1.0,0,0.4, 0,0,0, 0.7, 0.3,0.3,0.3, 1, wingAngle, textureMode, texture);
-
-    // // Drone bees
-    // bee(2,0.5,0, 0,0,0, 0.7, 0.35,0.5,0.5,1, 60, textureMode, texture);
-    // bee(-2,0.5,0, 0,30,0, 0.7, 0.35,0.5,0.5,1, 60, textureMode, texture);
-    // bee(-2,0.1,0.5, 0,0,40, 0.7, 0.35,0.5,0.5,1, 60, textureMode, texture);
-    // bee(-1,0.1,0.5, 0,50,0, 0.7, 0.35,0.5,0.5,1, 60, textureMode, texture);
 
     time_step++;
     /* ========= END SHAPE CALLS ========= */
@@ -586,17 +620,17 @@ int CreateShaderProg(char* VertFile,char* FragFile)
 // Start up GLUT and tell it what to do
 int main(int argc,char* argv[])
 {
-    ////////////////////////////////////////////////////////
-    // Read in h5 concentration map
-    mapFile = fopen("abm_data/array.txt", "r");
-    for (i=0; i<arenaSize; i++) {
-        for (j=0; j<arenaSize; j++) {
-            fscanf(mapFile, "%lf", &concentrationMap[i][j]);
-        }
-    }
-    // printf("Debug value: %f\n", concentrationMap[100][100]);
-    fclose(mapFile);
-    ////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////
+    // // Read in h5 concentration map
+    // mapFile = fopen("abm_data/array.txt", "r");
+    // for (i=0; i<arenaSize; i++) {
+    //     for (j=0; j<arenaSize; j++) {
+    //         fscanf(mapFile, "%lf", &concentrationMap[i][j]);
+    //     }
+    // }
+    // // printf("Debug value: %f\n", concentrationMap[100][100]);
+    // fclose(mapFile);
+    // ////////////////////////////////////////////////////////
 
 
     // Initialize GLUT and process user parameters
