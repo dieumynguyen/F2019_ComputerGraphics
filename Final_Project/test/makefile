@@ -1,5 +1,5 @@
 # Example 8
-EXE=hw6
+EXE=test
 
 # Main target
 all: $(EXE)
@@ -30,7 +30,7 @@ endif
 	g++ -c $(CFLG) $<
 
 #  Link
-hw6:hw6.o
+test:test.o
 	gcc -O3 -o $@ $^   $(LIBS)
 
 #  Clean

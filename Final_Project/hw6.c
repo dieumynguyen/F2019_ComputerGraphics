@@ -65,11 +65,15 @@ int shader[] = {0};
 
 ////////////////////////////
 // Concentration map variables
-int arenaSize = 301;
 int i, j;
+int arenaSize = 301;
 double concentrationMap[301][301];
 FILE *mapFile;
 ////////////////////////////
+
+int numBees = 25;
+double positionArray[25][3];
+FILE *posFile;
 
 /* ====================== DISPLAY ====================== */
 // OpenGL (GLUT) calls this routine to display the scene
@@ -148,9 +152,8 @@ void display()
     /* ========= GET CONCENTRATION MAPS ========= */
     // Read in h5 concentration map
     if (time_step < 5000) {
-        char filepath[30];
-        snprintf(filepath, 30, "abm_data/timestep_%d.txt", time_step);
-        // printf("%s\n", filepath);
+        char filepath[60];
+        snprintf(filepath, 60, "abm_data/concentrationMaps/timestep_%d.txt", time_step);
 
         // Read in external data to visualize concentration map
         mapFile = fopen(filepath, "r");
@@ -162,9 +165,23 @@ void display()
         fclose(mapFile);
     }
 
-
     /* ========= GET BEE POSITIONS ========= */
+    if (time_step < 5000) {
+        char filepath2[60];
+        snprintf(filepath2, 60, "abm_data/positionArrays/timestep_%d.txt", time_step);
 
+        // Read in external data to visualize concentration map
+        posFile = fopen(filepath2, "r");
+        for (i=0; i<numBees; i++) {         // Loop over bees
+            for (j=0; j<3; j++) {           // Loop over a bee's XY
+                fscanf(mapFile, "%lf", &positionArray[i][j]);
+            }
+        }
+        // printf("X: %lf\n", positionArray[3][0]);
+        // printf("Y: %lf\n", positionArray[3][1]);
+        // printf("State: %lf\n", positionArray[3][2]);
+        fclose(posFile);
+    }
 
 
     /* ========= CALL SHAPES HERE ========= */
@@ -175,42 +192,26 @@ void display()
     // Bee: x,y,z, azimuth,elevation,theta, scale, head_z, x_scalar,y_scalar,z_scalar, wing_angle
     // All bees should be at same y
     // Queen bee
-    float wingAngle = (Cos(time_step*wingRate) + 1) / 2 * 90;
+    float wingAngle = 0;
     bee(0,0,0, 0,0,0, 0.7, 0.35, 0.3,0.3,1.5, wingAngle, textureMode, texture);
 
-    // Worker bees
-    for (i=0; i<3; i++) {
-        // Check for bee ID
-        // Then look in x and y array for this bee at this time_step for position
-        // Also check in its state array to see if it should flap wings
-        x = bee[i][x][time_step]
-        y = bee[i][y][time_step]
-        state = bee[i][state][time_step]   // 1 is scenting
-        if (state == 1) {
-            wingAngle = wingAngle;
+    // Draw worker bees for this time step
+    int bee_i;
+    double x_position, y_position;
+    for (bee_i=0; bee_i<numBees; bee_i++) {
+        x_position = positionArray[bee_i][0];
+        y_position = positionArray[bee_i][1];
+
+        // Flap wings if scenting
+        if (positionArray[bee_i][2] == 1) {
+            wingAngle = (Cos(time_step*wingRate) + 1) / 2 * 90;
         }
         else {
             wingAngle = 0;
         }
-        bee(x,0,y, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
 
-
-
-        //
-        // if (i == 0) {
-        //     bee(1,0,0, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
-        // }
-        // else {
-        //     bee(0.6,0,0.4, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
-        // }
+        bee(x_position,0,y_position, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
     }
-
-    // bee(1,0,0, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
-    // bee(0.6,0,0.4, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
-
-    // bee(-0.6,0,0, 0,0,0, 0.7, 0.3,0.3,0.3, 1, wingAngle, textureMode, texture);
-    // bee(-1.0,0,0.4, 0,0,0, 0.7, 0.3,0.3,0.3, 1, wingAngle, textureMode, texture);
-    // bee(-1.0,0,0.4, 0,0,0, 0.7, 0.3,0.3,0.3, 1, wingAngle, textureMode, texture);
 
     time_step++;
     /* ========= END SHAPE CALLS ========= */
