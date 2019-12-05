@@ -27,7 +27,7 @@ void main()
     height = gl_Vertex.y;
 
     // Set constant y -- bc we just want color not a bump
-    float new_y = 0.5; //gl_Vertex.y*5.0; // 0.05
+    float new_y = 0.5; // gl_Vertex.y*5.0; // 0.05
     // gl_Vertex.y = -5;
     gl_Position = gl_ModelViewProjectionMatrix * vec4(gl_Vertex.x, new_y, gl_Vertex.z, 1);
 }

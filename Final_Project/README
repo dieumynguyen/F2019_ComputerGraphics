@@ -1,19 +1,24 @@
 Dieu My Nguyen
 CSCI 5229 - Computer Graphics
-24 October 2019
-Homework 6 - Textures
+01 December 2019
+Final Project - Review
 
-This program draws and displays the 3D of honey bees from homework 3, with the same projection settings from homework 4. Light is added from homework 5, and is moving by default but can be stopped and moved under control keys. The user can also change the smooth/flat shading, the emission, ambient, diffuse, and specular intensities, as well as the shininess. The wings of the bees have a veiny texture, and are also transparent using blending. The head and body of the bees have a fluffy texture to emulate the fuzz real bees have to trap pollen. 
+The goal of this project is to create a 3D visualization of my current research on modeling honey bee swarming behavior. The data for this visualization comes from an agent-based model, which simulates how bees collectively search for the queen by forming a pheromone signal propagation network. This program draws the bees in 3D on a platform surface used to visualize the pheromone chemicals bees emit to communicate. The queen bee is a large bee in the center of the platform, and emits a axi-symmetrical pheromones periodically. Worker bees are smaller bees, whose positions are randomly initialized and their initial state is random walk. Each bee of any type is composed of a spheroid for the head, ellipsoid for the body, filled ellipses with appropriate rotations for the wings, and rectangular cuboids for the antennae. Each bee is a grouping of the generic objects, and is transformed with regards to the global space to be rotated/translated. The wings of the bees have a veiny texture, and are also transparent using blending. The head and body of the bees have a fluffy texture to emulate the fuzz real bees have to trap pollen. 
 
-Approximate time it took to complete the assignment: 15 hours
+When their detection threshold is met, the worker bees emit pheromone from the tip of their abdomens and flap their wings. The pheromone diffuses and decays in time and space. This program reads in data that specify the position, heading, and state (emitting or random walk) of each bee as well as the data of the concentration maps (2D arrays). The maps are read in and visualized on the surface using a simple shader to map the concentration value at each pixel as a color. 
 
-First-person perspective has mouse control enabled. 
+The user can view the scene in orthogonal and perspective projections from multiple eye positions. When in perspective mode, the scene can also be viewed in the first-person mode, in which the user can move the mouse to look around at a camera position or use the below keys to walk around the dynamic scene. Lighting is applied to the bees, but not to the platform to avoid messing with the colors of the pheromones. The light is moving by default but can be stopped and moved under control keys. The user can also change the smooth/flat shading, the emission, ambient, diffuse, and specular intensities, as well as the shininess. 
+
+Please note that I was only able to show 30 time steps for this simulation given the limitation on file size on Moodle (the data the program reads in is quite sizable). The complete simulation will show bees walking with small step sizes and therefore less spastic, and a swarm at the end. For now, the 30 time steps of movement happen quickly, then bees are staying still with their positions from the last step. 
+
 Key bindings for this program:
 
 ------- General keys -------
 • esc   : Exit
 • 0     : Reset view angle
 • x or X: Toggle show axes
+• <     : Move platform up
+• >     : Move platform down
 
 ------- Texture keys -------
 • t or T: Toggle texture between modulate and replace
@@ -22,7 +27,7 @@ Key bindings for this program:
 • p or P: Switch orthogonal or perspective
 • f or F: Turn on or off first-person mode when in perspective mode
 • - or +: Decrease or increase field of view angle
-• u or m: Move first-person camera up or down
+• y or h: Move first-person camera up or down
 • w     : Move first-person camera forward
 • s     : Move first-person camera backward
 • d     : Move first-person camera right
@@ -33,8 +38,13 @@ Key bindings for this program:
 • m or M : Toggle light movement
 • ( and ): Increase and decrease light rotation angle
 • [ and ]: Decrease and increase light elevation
-• i and I: Decrease and increase ambient level 
-• u and U: Decrease and increase diffuse level 
-• o and O: Decrease and increase specular level 
-• e and E: Decrease and increase emission level 
-• n and N: Decrease and increase shininess level 
+• i and I: Decrease and increase ambient level
+• u and U: Decrease and increase diffuse level
+• o and O: Decrease and increase specular level
+• e and E: Decrease and increase emission level
+• n and N: Decrease and increase shininess level
+
+*************** REMAINING TO-DO ***************
+The current state of this program is sufficient for my research needs, with a few minor improvements. I will try to figure out a better scaling for the bees to simulate collision avoidance. The agent-based model itself is built where bees do detect collision and avoid it, but in this visualization I still need to figure out the bee size relative to the platform. The data for this is currently a small example simulation, so I will run a more complete simulation with more reasonable step size, number of bees, etc. If time as well as file size for the final submission allow, I will allow the user to explore several different simulations where we see different emergent collective behavior when the underlying parameters vary. This will require a big file submission, so is it possible for me to upload this elsewhere besides Moodle? 
+
+Additional question: Does this look sufficient for the purposes of this course project? I have a grant proposal and a research paper due around the same time as the final deadline, so I would really appreciate feedback on any additional deliverables to aim for. 

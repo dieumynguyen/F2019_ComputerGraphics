@@ -5,7 +5,7 @@
 //
 // void main()
 // {
-//     //gl_FragColor = vec4(Normal*time % 200, 1);
+//     // gl_FragColor = vec4(Normal*time % 200, 1);
 //     gl_FragColor = Position;
 // }
 
@@ -17,6 +17,6 @@ void main()
 {
    // gl_FragColor = gl_Color;
    float x = height;
-   vec3 C = vec3(height, 0, 0);
+   vec3 C = vec3(height, 0.4, 0);
    gl_FragColor = vec4(C, 1);
 }

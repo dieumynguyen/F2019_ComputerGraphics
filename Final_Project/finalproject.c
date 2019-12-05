@@ -1,7 +1,7 @@
 #include "CSCIx229.h"
 
 /* ====================== GLOBALS ====================== */
-int th = 180;           // Azimuth
+int th = 180;         // Azimuth
 int ph = 90;          // Elevation
 double zh = 90;       // Rotation
 int axes = 1;         // Display axes
@@ -11,7 +11,7 @@ int firstPerson = 0;     // First person mode is perspective
 int projectionMode = 1;  // Projection mode: 0 for orthographic, 1 for perspective
 int fov = 55;            // Field of view for perspective
 double asp = 1;          // Aspect ratio
-double dim = 4.0;        // Size of world; 4
+double dim = 3.0;        // Size of world; 4
 // For FP Perspective
 float xPosition = 0, yPosition = 0, zPosition = 4;  // Position of camera
 float xRotation = 0, yRotation = 0, zRotation = 0;  // Rotation axes
@@ -19,6 +19,7 @@ float angle = 0.0;									// Angle of rotation
 float cRadius = 4.0;                   				// Our distance from the camera
 float xLast, yLast; 								// Previous x,y
 
+// Platform
 float platformHeight = -0.115;
 
 // For lighting
@@ -47,10 +48,6 @@ int time_step = 0;
 int num_timesteps = 90;
 float wingRate = 15;
 
-
-float X=0,Y=0,Z=1; //  Mandelbrot X,Y,Z
-
-
 ////////////////////////////
 // Shader variables
 int shaderMode = 0;
@@ -62,7 +59,6 @@ int shader[] = {0};
 #endif
 ////////////////////////////
 
-
 ////////////////////////////
 // Concentration map variables
 int i, j;
@@ -71,9 +67,100 @@ double concentrationMap[301][301];
 FILE *mapFile;
 ////////////////////////////
 
+int numTime = 30;
 int numBees = 25;
-double positionArray[25][3];
+double positionArray[25][4];
 FILE *posFile;
+
+////////////////// Skybox
+int skybox[6];
+#define SKY_FRONT 0
+#define SKY_RIGHT 1
+#define SKY_LEFT 2
+#define SKY_BACK 3
+#define SKY_UP 4
+#define SKY_DOWN 5
+
+void drawSkybox(double D)
+{
+  GLfloat const white[3] = {1,1,1};
+  glColor3fv(white);
+  glEnable(GL_TEXTURE_2D);
+
+  /* Sides */
+  glBindTexture(GL_TEXTURE_2D,skybox[SKY_RIGHT]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0,0); glVertex3f(-D,-D,-D);
+  glTexCoord2f(1,0); glVertex3f(+D,-D,-D);
+  glTexCoord2f(1,1); glVertex3f(+D,+D,-D);
+  glTexCoord2f(0,1); glVertex3f(-D,+D,-D);
+  glEnd();
+
+  glBindTexture(GL_TEXTURE_2D,skybox[SKY_FRONT]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0,0); glVertex3f(+D,-D,-D);
+  glTexCoord2f(1,0); glVertex3f(+D,-D,+D);
+  glTexCoord2f(1,1); glVertex3f(+D,+D,+D);
+  glTexCoord2f(0,1); glVertex3f(+D,+D,-D);
+  glEnd();
+
+  glBindTexture(GL_TEXTURE_2D,skybox[SKY_LEFT]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0,0); glVertex3f(+D,-D,+D);
+  glTexCoord2f(1,0); glVertex3f(-D,-D,+D);
+  glTexCoord2f(1,1); glVertex3f(-D,+D,+D);
+  glTexCoord2f(0,1); glVertex3f(+D,+D,+D);
+  glEnd();
+
+  glBindTexture(GL_TEXTURE_2D,skybox[SKY_BACK]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0,0); glVertex3f(-D,-D,+D);
+  glTexCoord2f(1,0); glVertex3f(-D,-D,-D);
+  glTexCoord2f(1,1); glVertex3f(-D,+D,-D);
+  glTexCoord2f(0,1); glVertex3f(-D,+D,+D);
+  glEnd();
+
+  /* Top and Bottom */
+  glBindTexture(GL_TEXTURE_2D,skybox[SKY_UP]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0,0); glVertex3f(-D,+D,-D);
+  glTexCoord2f(1,0); glVertex3f(+D,+D,-D);
+  glTexCoord2f(1,1); glVertex3f(+D,+D,+D);
+  glTexCoord2f(0,1); glVertex3f(-D,+D,+D);
+  glEnd();
+
+  glBindTexture(GL_TEXTURE_2D,skybox[SKY_DOWN]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBegin(GL_QUADS);
+  glTexCoord2f(1,1); glVertex3f(+D,-D,-D);
+  glTexCoord2f(0,1); glVertex3f(-D,-D,-D);
+  glTexCoord2f(0,0); glVertex3f(-D,-D,+D);
+  glTexCoord2f(1,0); glVertex3f(+D,-D,+D);
+  glEnd();
+
+  glDisable(GL_TEXTURE_2D);
+}
+
+void drawScene() {
+    glDepthFunc(GL_LEQUAL);
+
+    glPushMatrix();
+    drawSkybox(3.5*dim);
+    glPopMatrix();
+    glDepthMask(1);
+    glDepthFunc(GL_LESS);
+}
 
 /* ====================== DISPLAY ====================== */
 // OpenGL (GLUT) calls this routine to display the scene
@@ -151,7 +238,7 @@ void display()
 
     /* ========= GET CONCENTRATION MAPS ========= */
     // Read in h5 concentration map
-    if (time_step < 5000) {
+    if (time_step < numTime) {
         char filepath[60];
         snprintf(filepath, 60, "abm_data/concentrationMaps/timestep_%d.txt", time_step);
 
@@ -166,41 +253,57 @@ void display()
     }
 
     /* ========= GET BEE POSITIONS ========= */
-    if (time_step < 5000) {
+    if (time_step < numTime) {
         char filepath2[60];
         snprintf(filepath2, 60, "abm_data/positionArrays/timestep_%d.txt", time_step);
 
         // Read in external data to visualize concentration map
         posFile = fopen(filepath2, "r");
         for (i=0; i<numBees; i++) {         // Loop over bees
-            for (j=0; j<3; j++) {           // Loop over a bee's XY
+            for (j=0; j<4; j++) {           // Loop over a bee's XY
                 fscanf(mapFile, "%lf", &positionArray[i][j]);
             }
         }
         // printf("X: %lf\n", positionArray[3][0]);
         // printf("Y: %lf\n", positionArray[3][1]);
         // printf("State: %lf\n", positionArray[3][2]);
+        // printf("Angle: %lf\n", positionArray[3][3]);
         fclose(posFile);
     }
 
 
     /* ========= CALL SHAPES HERE ========= */
+
+    drawScene();
+
+
     // Platform for pheromone plumes
     // ground(float x,float y,float z, float scale, concentrationMap)
-    ground(0,platformHeight,0, 3, concentrationMap);
+    ground(0,platformHeight,0, 1.5, concentrationMap);
 
     // Bee: x,y,z, azimuth,elevation,theta, scale, head_z, x_scalar,y_scalar,z_scalar, wing_angle
     // All bees should be at same y
     // Queen bee
     float wingAngle = 0;
-    bee(0,0,0, 0,0,0, 0.7, 0.35, 0.3,0.3,1.5, wingAngle, textureMode, texture);
+    bee(0,0,0, 0,0,0, 0.6, 0.35, 0.3,0.3,1.5, wingAngle, textureMode, texture);
+
+
+    // bee(-0.5,0,0.5,  // x, y, z
+    //     0,0,0,          // azimuth, elevation or x, theta
+    //     0.4,            // scale
+    //     0.3,            // head_z
+    //     0.3,0.3,0.8,    // x_scalar, y_scalar, z_scalar
+    //     wingAngle, textureMode, texture);
+    //
 
     // Draw worker bees for this time step
     int bee_i;
-    double x_position, y_position;
+    double x_position, y_position, orientation;
     for (bee_i=0; bee_i<numBees; bee_i++) {
-        x_position = positionArray[bee_i][0];
-        y_position = positionArray[bee_i][1];
+        x_position = positionArray[bee_i][1];
+        y_position = positionArray[bee_i][0];
+
+        orientation = positionArray[bee_i][3];
 
         // Flap wings if scenting
         if (positionArray[bee_i][2] == 1) {
@@ -210,9 +313,14 @@ void display()
             wingAngle = 0;
         }
 
-        bee(x_position,0,y_position, 0,0,0, 0.5, 0.3, 0.3,0.3,0.8, wingAngle, textureMode, texture);
+        // Draw bee at position
+        bee(x_position,0,y_position,  // x, y, z
+            0,orientation,0,          // azimuth, elevation or x, theta
+            0.4,                      // scale
+            0.3,                      // head_z
+            0.3,0.3,0.8,              // x_scalar, y_scalar, z_scalar
+            wingAngle, textureMode, texture);
     }
-
     time_step++;
     /* ========= END SHAPE CALLS ========= */
 
@@ -321,13 +429,15 @@ void idle()
 // GLUT calls this routine when a key is pressed
 void key(unsigned char key, int x, int y)
 {
+    // ====================== GENERAL KEYS
     // Exit on ESC
     if (key == 27) {
         exit(0);
     }
     // Reset view angle
     else if (key == '0') {
-        th = ph = 0;
+        th = 180;
+        ph = 90;
     }
     // Toggle axes
     else if (key == 'x' || key == 'X') {
@@ -339,11 +449,11 @@ void key(unsigned char key, int x, int y)
        textureMode = 1 - textureMode;
     }
 
-    else if (key == 'u') {
+    else if (key == '<') {
         platformHeight += 0.04;
     }
 
-    else if (key == 'j') {
+    else if (key == '>') {
         platformHeight -= 0.04;
     }
 
@@ -363,14 +473,14 @@ void key(unsigned char key, int x, int y)
         fov++;
     }
     // Go up
-    if (key == 'u') {
+    if (key == 'y') {
         xRotation += 1;
         if (xRotation > 360) {
             xRotation -= 360;
       }
     }
     // Go down
-    if (key == 'm') {
+    if (key == 'h') {
         xRotation -= 1;
         if (xRotation < -360) {
             xRotation += 360;
@@ -621,19 +731,6 @@ int CreateShaderProg(char* VertFile,char* FragFile)
 // Start up GLUT and tell it what to do
 int main(int argc,char* argv[])
 {
-    // ////////////////////////////////////////////////////////
-    // // Read in h5 concentration map
-    // mapFile = fopen("abm_data/array.txt", "r");
-    // for (i=0; i<arenaSize; i++) {
-    //     for (j=0; j<arenaSize; j++) {
-    //         fscanf(mapFile, "%lf", &concentrationMap[i][j]);
-    //     }
-    // }
-    // // printf("Debug value: %f\n", concentrationMap[100][100]);
-    // fclose(mapFile);
-    // ////////////////////////////////////////////////////////
-
-
     // Initialize GLUT and process user parameters
     glutInit(&argc,argv);
     // Request double buffered, true color window with Z buffering at 600x600
@@ -660,6 +757,14 @@ int main(int argc,char* argv[])
 
     // Shader stuff
     shader[0] = CreateShaderProg("simple.vert", "simple.frag");
+
+    ////////////////// Skybox
+    skybox[SKY_FRONT] = LoadTexBMP("skybox_imgs/txStormydays_front.bmp");
+    skybox[SKY_RIGHT] = LoadTexBMP("skybox_imgs/txStormydays_right.bmp");
+    skybox[SKY_LEFT] = LoadTexBMP("skybox_imgs/txStormydays_left.bmp");
+    skybox[SKY_BACK] = LoadTexBMP("skybox_imgs/txStormydays_back.bmp");
+    skybox[SKY_UP] = LoadTexBMP("skybox_imgs/txStormydays_up.bmp");
+    skybox[SKY_DOWN] = LoadTexBMP("skybox_imgs/txStormydays_down.bmp");
 
     glutMainLoop();
     return 0;

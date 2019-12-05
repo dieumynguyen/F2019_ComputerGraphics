@@ -18,6 +18,7 @@ DS_Store
 *.npy
 *.mpeg
 *.py
+*.h5
 
 *.bmp
 *.txt

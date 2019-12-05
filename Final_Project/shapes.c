@@ -321,19 +321,36 @@ void bee(float x, float y, float z,
     cube(0.05,0.15,0.35, 0.01,0.2,0.01, 0,15,-15, textureMode, texture);
 
     // Wings: x,y,z, r, x_scalar,y_scalar,z_scalar
-    // Wing 1
-    glPushMatrix();
-    // glRotatef(wing_angle, 1,0,0);
-    glRotatef(wing_angle, 0,0,1);
-    wing(-0.05,0.25,0.1, 0.3, 0.1,0.8,0.4, texture);
-    // wing(-0.08,0,-0.05, 0.3, 0.1,0.8,0.4, texture);
-    glPopMatrix();
-    // Wing 2
-    glPushMatrix();
-    glRotatef(-wing_angle, 0,0,1);
-    wing(0.05,0.25,0.1, 0.3, 0.1,0.8,0.4, texture);
-    glPopMatrix();
+    if (wing_angle == 0) {    // Close wings when not flapping
+        // Wing 1
+        glPushMatrix();
+        // glRotatef(wing_angle, 1,0,0);
+        glRotatef(wing_angle, 0,0,1);
+        glRotatef(270, 1,0,0);
+        wing(-0.05,0.05,0.05, 0.3, 0.1,0.8,0.4, texture);
+        glPopMatrix();
 
+        // Wing 2
+        glPushMatrix();
+        glRotatef(-wing_angle, 0,0,1);
+        glRotatef(270, 1,0,0);
+        wing(0.05,0.05,0.05, 0.3, 0.1,0.8,0.4, texture);
+        glPopMatrix();
+
+    }
+    else {
+        // Wing 1
+        glPushMatrix();
+        glRotatef(wing_angle, 0,0,1);
+        wing(-0.05,0.25,0.1, 0.3, 0.1,0.8,0.4, texture);
+        glPopMatrix();
+        // Wing 2
+        glPushMatrix();
+        glRotatef(-wing_angle, 0,0,1);
+        wing(0.05,0.25,0.1, 0.3, 0.1,0.8,0.4, texture);
+        glPopMatrix();
+
+    }
     glPopMatrix();
 }
 
